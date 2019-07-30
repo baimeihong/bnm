@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bootstrap 实例 - 基本的表格</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="http://apps.bdimg.com/libs/bootstrap/3.3.0/css/bootstrap.min.css">
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://apps.bdimg.com/libs/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<div class="container">
+    <form>
+        <input type="text" name="title"  id="title">
+        <input type="button" class="search" value="搜索">
+    </form>
+<table class="table">
+    <caption>基本的表格布局</caption>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>姓名</th>
+    </tr>
+    </thead>
+    <tbody  id="tbody">
+
+    </tbody>
+    <tr>
+        <td  colspan="3">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default page" page="1">首页</button>
+                <button type="button" class="btn btn-default page" id="prev">上一页</button>
+                <button type="button" class="btn btn-default page" id="next">下一页</button>
+                <button type="button" class="btn btn-default page" id="last">尾页</button>
+            </div>
+        </td>
+    </tr>
+</table>
+</div>
+</body>
+</html>
+<script>
+    $(function(){
+        $.ajax({
+            url:'index.php',
+            dataType:'json',
+            success:function(res){
+            console.log(res);
+                str='';
+                $.each(res.data.data,function(k,v){
+                    str+="<tr> <td>"+ v.id+"</td> <td>"+ v.title+"</td> </tr>";
+                })
+                $("#tbody").html(str);
+                $("#prev").attr("page",res.data.prev);
+                $("#next").attr("page",res.data.next);
+            }
+        })
+    })
+    $(document).on('click','.page,.search',function(){
+        page=$(this).attr('page');
+        title=$("#title").val();
+        $.ajax({
+            data:{
+                page:page,
+                title:title
+            },
+            type:'get',
+            url:'index.php',
+            dataType:'json',
+            success:function(res){
+                console.log(res);
+                str='';
+                $.each(res.data.data,function(k,v){
+                    str+="<tr> <td>"+ v.id+"</td> <td>"+ v.title+"</td> </tr>";
+                })
+                $("#tbody").html(str);
+                $("#prev").attr("page",res.data.prev);
+                $("#next").attr("page",res.data.next);
+            }
+        })
+    })
+</script>
